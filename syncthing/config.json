@@ -2,6 +2,7 @@
 {
     "name": "Syncthing",
     "version": "1.13.1",
+    "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/syncthing",
     "slug": "syncthing",
     "description": "Syncthing continuous file synchronization service",
     "startup": "system",
@@ -11,7 +12,7 @@
     "ports": {"22000/tcp": 22000, "21027/udp": 21027},
     "ports_description": {"22000/tcp": "Sync Protocol Listen Port.  Must match listenAddress in config.", 
                           "21027/udp": "Sync Protocol Discovery and Multicast Port. Must match localAnnouncePort in config."},
-    "host_network": true,
+    "panel_icon": "mdi:sync",
     "map": ["share:rw", "config:rw", "backup:rw", "addons:rw"],
     "arch": ["armv7", "armhf", "amd64", "aarch64", "i386"],
     "ingress": true,
