@@ -1,0 +1,16 @@
+
+{
+    "name": "Syncthing",
+    "version": "1.13.1",
+    "slug": "syncthing",
+    "description": "Syncthing continuous file synchronization service",
+    "startup": "system",
+    "boot": "auto",
+    "options": {},
+    "schema": {},
+    "ports": {"22000/tcp": null, "21027/udp": 21027},
+    "map": ["share:rw", "config:rw", "backup:rw", "addons:rw"],
+    "arch": ["armv7", "armhf", "amd64", "aarch64", "i386"],
+    "ingress": true,
+    "ingress_port": 8099
+}
