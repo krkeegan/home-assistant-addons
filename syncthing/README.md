@@ -1,5 +1,5 @@
 # Syncthing
-Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers in real time.  More about  (Syncthing)[https://syncthing.net/].
+Syncthing is a continuous file synchronization program. It synchronizes files between two or more computers in real time.  More about  [Syncthing](https://syncthing.net/).
 
 # Notes for Home Assistant
 - The config files are stored in /config/syncthing so that they can be manually edited or viewed if you so choose using Visual Studio or other addon in Home Assistant.
