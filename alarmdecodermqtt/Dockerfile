@@ -8,7 +8,7 @@ ARG BUILD_ARCH
 ENV LANG C.UTF-8
 
 # Setup base
-RUN cd alarmdecoder \
+RUN cd /opt/alarmdecoder/alarmdecoder \
   && python setup.py
 
 COPY run.sh /
