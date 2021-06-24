@@ -10,7 +10,8 @@ ENV LANG C.UTF-8
 COPY . /opt/alarmdecoder
 
 # Setup base
-RUN apk --no-cache add python3-dev
+RUN apk --no-cache add python3-dev py3-pip
+RUN pip3 install setuptools
 RUN cd /opt/alarmdecoder/alarmdecoder \
   && python3 setup.py
 
