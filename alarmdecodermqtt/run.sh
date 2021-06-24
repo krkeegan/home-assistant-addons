@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 
-python /opt/alarmdecoder/alarmdecoder.py
+python3 /opt/alarmdecoder/alarmdecoder.py
