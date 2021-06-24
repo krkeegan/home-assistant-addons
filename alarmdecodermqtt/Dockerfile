@@ -7,6 +7,8 @@ ARG BUILD_ARCH
 # Add env
 ENV LANG C.UTF-8
 
+COPY . /opt/alarmdecoder
+
 # Setup base
 RUN apk --no-cache add python3-dev git
 RUN cd /opt/alarmdecoder/ \
