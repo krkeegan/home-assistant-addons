@@ -8,7 +8,8 @@ ARG BUILD_ARCH
 ENV LANG C.UTF-8
 
 # Setup base
-# Gonna need to dl and install my version of the repo here
+RUN cd alarmdecoder \
+  && python setup.py
 
 COPY run.sh /
 
