@@ -1,0 +1,3 @@
+[submodule "alarmdecodermqtt/alarmdecoder"]
+	path = alarmdecodermqtt/alarmdecoder
+	url = https://github.com/krkeegan/alarmdecoder.git
