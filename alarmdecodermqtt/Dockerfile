@@ -13,7 +13,7 @@ COPY . /opt/alarmdecoder
 RUN apk --no-cache add python3-dev py3-pip
 RUN pip3 install setuptools
 RUN cd /opt/alarmdecoder/alarmdecoder \
-  && python3 setup.py
+  && python3 setup.py install
 
 COPY run.sh /
 
