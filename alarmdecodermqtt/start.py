@@ -32,7 +32,6 @@ def main():
             print("Starting AlarmDecoder.")
             while True:
                 time.sleep(1)
-                print("Sleeping")
 
     except Exception as ex:
         print('Exception:', ex)
@@ -42,7 +41,7 @@ def handle_message(sender, message):
     """
     Handles message events from the AlarmDecoder.
     """
-    print(message.raw)
+    print(message.raw, flush=True)
 
 
 if __name__ == '__main__':
