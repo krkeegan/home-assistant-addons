@@ -1,10 +1,16 @@
 import time
+import json
 from alarmdecoder import AlarmDecoder
 from alarmdecoder.devices import SocketDevice
 
+# Load Config
+f = open('/data/options.json')
+config = json.load(f)
+f.close()
+
 # Configuration values
-HOSTNAME = 'alarmdecoder'
-PORT = 10000
+HOSTNAME = config['alarm_addr']
+PORT = config['alarm_port']
 
 def main():
     """
