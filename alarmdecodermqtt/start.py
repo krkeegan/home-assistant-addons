@@ -53,16 +53,16 @@ def handle_zone_fault(device, zone):
     Handles fault signals.
     """
     print("Zone", zone, "Fault.", flush=True)
-    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + zone, payload="on", qos=0,
-                   retain=False)
+    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + str(zone), payload="on",
+                   qos=0, retain=False)
 
 def handle_zone_restore(device, zone):
     """
     Handles fault signals.
     """
     print("Zone", zone, "Clear.", flush=True)
-    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + zone, payload="off", qos=0,
-                   retain=False)
+    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + str(zone), payload="off",
+                   qos=0, retain=False)
 
 def handle_ready_changed(device, ready):
     """
