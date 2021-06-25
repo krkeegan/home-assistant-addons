@@ -1,7 +1,7 @@
 
 {
     "name": "AlarmDecoder-MQTT",
-    "version": "0.0.14",
+    "version": "0.0.15",
     "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/alarmdecodermqtt",
     "slug": "alarmdecodermqtt",
     "description": "An MQTT interface to the AlarmDecoder API",
@@ -9,11 +9,21 @@
     "boot": "auto",
     "options": {
       "alarm_addr": "alarmdecoder",
-      "alarm_port": 10000
+      "alarm_port": 10000,
+      "mqtt_addr": "core-mosquitto",
+      "mqtt_port": 1883,
+      "mqtt_user": "",
+      "mqtt_pass": "",
+      "mqtt_topic": "alarmdecoder"
     },
     "schema": {
       "alarm_addr": "str",
-      "alarm_port": "int(0,65535)"
+      "alarm_port": "int(0,65535)",
+      "mqtt_addr": "str",
+      "mqtt_port": "int(0,65535)",
+      "mqtt_user": "str",
+      "mqtt_pass": "str",
+      "mqtt_topic": "str"
     },
     "ports": {},
     "ports_description": {},

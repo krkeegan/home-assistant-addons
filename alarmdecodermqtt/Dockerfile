@@ -12,6 +12,7 @@ COPY . /opt/alarmdecoder
 # Setup base
 RUN apk --no-cache add python3-dev py3-pip
 RUN pip3 install setuptools
+RUN pip3 install paho-mqtt
 RUN cd /opt/alarmdecoder/alarmdecoder \
   && python3 setup.py install
 
