@@ -27,7 +27,9 @@ def main():
         device = AlarmDecoder(SocketDevice(interface=(HOSTNAME, PORT)))
 
         # Set up an event handler and open the device
-        device.on_message += handle_message
+        device.on_zone_fault += handle_zone_fault
+        device.on_zone_restore += handle_zone_restore
+        device.on_ready_changed += handle_ready_changed
         with device.open():
             print("Starting AlarmDecoder.")
             while True:
@@ -36,13 +38,26 @@ def main():
     except Exception as ex:
         print('Exception:', ex)
 
-
-def handle_message(sender, message):
+def handle_zone_fault(device, zone):
     """
-    Handles message events from the AlarmDecoder.
+    Handles fault signals.
     """
-    print(message.raw, flush=True)
+    print("Zone ", zone, "Fault.", flush=True)
 
+def handle_zone_restore(device, zone):
+    """
+    Handles fault signals.
+    """
+    print("Zone ", zone, "Clear.", flush=True)
+
+def handle_ready_changed(device, ready):
+    """
+    Handles the ready state of the device.
+    """
+    if ready:
+        print("Device Ready", flush=True)
+    else:
+        print("Device Not Ready", flush=True)
 
 if __name__ == '__main__':
     main()
