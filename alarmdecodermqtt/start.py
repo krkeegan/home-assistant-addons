@@ -1,6 +1,6 @@
 import time
 import json
-import os.path
+import ssl
 from alarmdecoder import AlarmDecoder
 from alarmdecoder.devices import SocketDevice
 import paho.mqtt.client as mqtt
@@ -13,37 +13,115 @@ f.close()
 # MQTT Client
 CLIENT = mqtt.Client()
 
+# map for Paho acceptable TLS cert request options
+CERT_REQ_OPTIONS = {'none': ssl.CERT_NONE, 'required': ssl.CERT_REQUIRED}
+
+# Map for Paho acceptable TLS version options. Some options are
+# dependent on the OpenSSL install so catch exceptions
+TLS_VER_OPTIONS = dict()
+try:
+    TLS_VER_OPTIONS['tls'] = ssl.PROTOCOL_TLS
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['tlsv1'] = ssl.PROTOCOL_TLSv1
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['tlsv11'] = ssl.PROTOCOL_TLSv1_1
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['tlsv12'] = ssl.PROTOCOL_TLSv1_2
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['sslv2'] = ssl.PROTOCOL_SSLv2
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['sslv23'] = ssl.PROTOCOL_SSLv23
+except AttributeError:
+    pass
+try:
+    TLS_VER_OPTIONS['sslv3'] = ssl.PROTOCOL_SSLv3
+except AttributeError:
+    pass
+
 def main():
     """
     Example application that opens a device that has been exposed to the
     network with ser2sock or similar serial-to-IP software.
     """
 
+    print("Connecting to MQTT Broker.", flush=True)
+    if CONFIG['mqtt_broker']['mqtt_user'] != "":
+        print("Using Username/Password.", flush=True)
+        CLIENT.username_pw_set(CONFIG['mqtt_user'],
+                               password=CONFIG['mqtt_broker']['mqtt_pass'])
+
+    if CONFIG['mqtt_broker']['ca_cert'] != "":
+        print("Using SSL/TLS Connection.", flush=True)
+        certfile = None
+        if CONFIG['mqtt_broker']['certfile'] != "":
+            certfile = CONFIG['mqtt_broker']['certfile']
+        keyfile = None
+        if CONFIG['mqtt_broker']['keyfile'] != "":
+            keyfile = CONFIG['mqtt_broker']['keyfile']
+        ciphers = None
+        if CONFIG['mqtt_broker']['ciphers'] != "":
+            ciphers = CONFIG['mqtt_broker']['ciphers']
+        addl_tls_kwargs = {}
+        tls_version = TLS_VER_OPTIONS.get(
+            CONFIG['mqtt_broker']['tls_version'], None
+        )
+        if tls_version is not None:
+            addl_tls_kwargs['tls_version'] = tls_version
+        cert_reqs = CERT_REQ_OPTIONS.get(
+            CONFIG['mqtt_broker']['cert_reqs'], None
+        )
+        if cert_reqs is not None:
+            addl_tls_kwargs['cert_reqs'] = cert_reqs
+        try:
+            CLIENT.tls_set(ca_certs=CONFIG['mqtt_broker']['ca_cert'],
+                           certfile=certfile,
+                           keyfile=keyfile,
+                           ciphers=ciphers,
+                           **addl_tls_kwargs)
+        except FileNotFoundError as e:
+            print("Cannot locate a SSL/TLS file = %s." % e, flush=True)
+            return
+
+        except ssl.SSLError as e:
+            print("SSL/TLS Config error = %s." % e, flush=True)
+            return
+
     try:
-        print("Connecting to MQTT Broker.", flush=True)
-        if CONFIG['mqtt_user'] != "":
-            CLIENT.username_pw_set(CONFIG['mqtt_user'],
-                                   password=CONFIG['mqtt_pass'])
-        CLIENT.connect(CONFIG['mqtt_addr'], CONFIG['mqtt_port'], 60)
-        CLIENT.loop_start()
+        CLIENT.connect(CONFIG['mqtt_broker']['mqtt_addr'],
+                       CONFIG['mqtt_broker']['mqtt_port'], 60)
     except Exception as ex:
-        print('Exception:', ex)
+        print('Unable to connect to MQTT Broker:', ex)
         return
 
-    try:
-        print("Connecting to AlarmDecoder.", flush=True)
-        # Retrieve an AD2 device that has been exposed with ser2sock
-        device = AlarmDecoder(SocketDevice(interface=(CONFIG['alarm_addr'],
-                                                      CONFIG['alarm_port'])))
+    # Start the loop
+    CLIENT.loop_start()
 
-        # Set up an event handler and open the device
-        device.on_zone_fault += handle_zone_fault
-        device.on_zone_restore += handle_zone_restore
-        device.on_ready_changed += handle_ready_changed
+    print("Connecting to AlarmDecoder.", flush=True)
+
+    # Retrieve an AD2 device that has been exposed with ser2sock
+    device = AlarmDecoder(SocketDevice(interface=(CONFIG['alarm_addr'],
+                                                  CONFIG['alarm_port'])))
+
+    # Set up an event handler and open the device
+    device.on_zone_fault += handle_zone_fault
+    device.on_zone_restore += handle_zone_restore
+    device.on_ready_changed += handle_ready_changed
+
+    try:
         with device.open():
             while True:
+                # This is the main loop, we stay here until terminated
                 time.sleep(1)
-
     except Exception as ex:
         print('Exception:', ex)
         return
