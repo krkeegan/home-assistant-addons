@@ -57,7 +57,7 @@ def main():
     print("Connecting to MQTT Broker.", flush=True)
     if CONFIG['mqtt_broker']['mqtt_user'] != "":
         print("Using Username/Password.", flush=True)
-        CLIENT.username_pw_set(CONFIG['mqtt_user'],
+        CLIENT.username_pw_set(CONFIG['mqtt_broker']['mqtt_user'],
                                password=CONFIG['mqtt_broker']['mqtt_pass'])
 
     if CONFIG['mqtt_broker']['ca_cert'] != "":
