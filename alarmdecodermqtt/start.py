@@ -75,11 +75,20 @@ def main():
             )
             if cert_reqs is not None:
                 addl_tls_kwargs['cert_reqs'] = cert_reqs
+        certfile = None
+        if 'certfile' in CONFIG['mqtt_broker']:
+            certfile = CONFIG['mqtt_broker']['certfile']
+        keyfile = None
+        if 'keyfile' in CONFIG['mqtt_broker']:
+            keyfile = CONFIG['mqtt_broker']['keyfile']
+        ciphers = None
+        if 'ciphers' in CONFIG['mqtt_broker']:
+            ciphers = CONFIG['mqtt_broker']['ciphers']
         try:
             CLIENT.tls_set(ca_certs=CONFIG['mqtt_broker']['ca_cert'],
-                           certfile=CONFIG['mqtt_broker']['certfile'],
-                           keyfile=CONFIG['mqtt_broker']['keyfile'],
-                           ciphers=CONFIG['mqtt_broker']['ciphers'],
+                           certfile=certfile,
+                           keyfile=keyfile,
+                           ciphers=ciphers,
                            **addl_tls_kwargs)
         except FileNotFoundError as e:
             print("Cannot locate a SSL/TLS file = %s." % e, flush=True)
