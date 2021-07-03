@@ -111,8 +111,10 @@ def main():
     print("Connecting to AlarmDecoder.", flush=True)
 
     # Retrieve an AD2 device that has been exposed with ser2sock
-    device = AlarmDecoder(SocketDevice(interface=(CONFIG['alarm_addr'],
-                                                  CONFIG['alarm_port'])))
+    device = AlarmDecoder(SocketDevice(interface=(
+        CONFIG['alarmdecoder']['alarm_addr'],
+        CONFIG['alarmdecoder']['alarm_port']
+    )))
 
     # Set up an event handler and open the device
     device.on_zone_fault += handle_zone_fault
