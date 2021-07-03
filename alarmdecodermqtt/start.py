@@ -55,21 +55,21 @@ def main():
     """
 
     print("Connecting to MQTT Broker.", flush=True)
-    if CONFIG['mqtt_broker']['mqtt_user'] != "":
+    if 'mqtt_user' in CONFIG['mqtt_broker']:
         print("Using Username/Password.", flush=True)
         CLIENT.username_pw_set(CONFIG['mqtt_broker']['mqtt_user'],
                                password=CONFIG['mqtt_broker']['mqtt_pass'])
 
-    if CONFIG['mqtt_broker']['ca_cert'] != "":
+    if 'ca_cert' in CONFIG['mqtt_broker']:
         print("Using SSL/TLS Connection.", flush=True)
         addl_tls_kwargs = {}
-        if CONFIG['mqtt_broker']['tls_version'] is not None:
+        if 'tls_version' in CONFIG['mqtt_broker']:
             tls_version = TLS_VER_OPTIONS.get(
                 CONFIG['mqtt_broker']['tls_version'], None
             )
             if tls_version is not None:
                 addl_tls_kwargs['tls_version'] = tls_version
-        if CONFIG['mqtt_broker']['cert_reqs'] is not None:
+        if 'cert_reqs' in CONFIG['mqtt_broker']:
             cert_reqs = CERT_REQ_OPTIONS.get(
                 CONFIG['mqtt_broker']['cert_reqs'], None
             )
