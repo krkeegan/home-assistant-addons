@@ -63,16 +63,18 @@ def main():
     if CONFIG['mqtt_broker']['ca_cert'] != "":
         print("Using SSL/TLS Connection.", flush=True)
         addl_tls_kwargs = {}
-        tls_version = TLS_VER_OPTIONS.get(
-            CONFIG['mqtt_broker']['tls_version'], None
-        )
-        if tls_version is not None:
-            addl_tls_kwargs['tls_version'] = tls_version
-        cert_reqs = CERT_REQ_OPTIONS.get(
-            CONFIG['mqtt_broker']['cert_reqs'], None
-        )
-        if cert_reqs is not None:
-            addl_tls_kwargs['cert_reqs'] = cert_reqs
+        if CONFIG['mqtt_broker']['tls_version'] is not None:
+            tls_version = TLS_VER_OPTIONS.get(
+                CONFIG['mqtt_broker']['tls_version'], None
+            )
+            if tls_version is not None:
+                addl_tls_kwargs['tls_version'] = tls_version
+        if CONFIG['mqtt_broker']['cert_reqs'] is not None:
+            cert_reqs = CERT_REQ_OPTIONS.get(
+                CONFIG['mqtt_broker']['cert_reqs'], None
+            )
+            if cert_reqs is not None:
+                addl_tls_kwargs['cert_reqs'] = cert_reqs
         try:
             CLIENT.tls_set(ca_certs=CONFIG['mqtt_broker']['ca_cert'],
                            certfile=CONFIG['mqtt_broker']['certfile'],

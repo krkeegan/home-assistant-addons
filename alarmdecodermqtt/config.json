@@ -1,7 +1,7 @@
 
 {
     "name": "AlarmDecoder-MQTT",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/alarmdecodermqtt",
     "slug": "alarmdecodermqtt",
     "description": "An MQTT interface to the AlarmDecoder API",
@@ -39,8 +39,8 @@
         "ca_cert": "str?",
         "certfile": "str?",
         "keyfile": "str?",
-        "tls_version": "list(tls|tlsv1|tlsv11|tlsv12|sslv2|sslv23|sslv3)",
-        "cert_reqs": "list(none|required)",
+        "tls_version": "list(tls|tlsv1|tlsv11|tlsv12|sslv2|sslv23|sslv3)?",
+        "cert_reqs": "list(none|required)?",
         "ciphers": "str?"
       },
       "mqtt_topic": "str"
