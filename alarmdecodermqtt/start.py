@@ -133,7 +133,11 @@ def main():
 def handle_zone_fault(device, zone):
     """
     Handles fault signals.
+
+    Also set zones as expanders if defined by user.
     """
+    if(zone.zone in CONFIG['expander_zones'] and not zone.expander):
+        zone.expander = True
     print("Zone", zone, "Fault.", flush=True)
     CLIENT.publish(CONFIG['mqtt_topic'] + "/" + str(zone), payload="on",
                    qos=0, retain=False)
