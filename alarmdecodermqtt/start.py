@@ -193,7 +193,7 @@ def handle_message(device, message):
                   "perimeter_only": message.perimeter_only,
                   "system_fault": message.system_fault}
     if attributes != PANEL_ATTRIBS:
-        PANEL_ATTRIBS = attributes
+        PANEL_ATTRIBS = attributes.copy()
         print("Updating panel flags.", flush=True)
         attributes['timestamp'] = str(message.timestamp)  # Not used in compare
         CLIENT.publish(CONFIG['mqtt_topic'] + "/panel",
