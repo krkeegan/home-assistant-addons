@@ -196,6 +196,23 @@ def handle_message(device, message):
         PANEL_ATTRIBS = attributes.copy()
         print("Updating panel flags.", flush=True)
         attributes['timestamp'] = str(message.timestamp)  # Not used in compare
+        # Add the state attribute, matches states available in HomeAssistant
+        state = ""
+        if message.alarm_sounding:
+            state = "triggered"
+        elif message.armed_away:
+            if message.zone_bypassed:
+                state = "armed_custom_bypass"
+            else:
+                state = "armed_away"
+        elif message.armed_home:
+            if message.zone_bypassed:
+                state = "armed_custom_bypass"
+            else:
+                state = "armed_home"
+        else:
+            state = "disarmed"
+        attributes['state'] = state
         CLIENT.publish(CONFIG['mqtt_topic'] + "/panel",
                        payload=json.dumps(attributes), qos=0, retain=False)
 

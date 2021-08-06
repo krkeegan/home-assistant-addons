@@ -1,3 +1,7 @@
+# 0.1.16
+Add state attribute to panel topic.  Possible states match those that are
+available in Home Assistant.
+
 # 0.1.13
 Publish all panel attribute flags on panel topic.  Can be used as json
 attributes when defining the panel.
