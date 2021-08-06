@@ -1,3 +1,10 @@
+# 0.2.0
+This is a stable release, with all of the initial features I plan to add.
+
+- Drop individual topic for ready state, available as an attribute of panel
+  now.
+- Move zone topics to be under zone
+
 # 0.1.16
 Add state attribute to panel topic.  Possible states match those that are
 available in Home Assistant.

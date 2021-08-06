@@ -33,8 +33,9 @@ I also use MQTT heavily in my system.
 
 This has very basic and rudimentary features:
 
-- An mqtt topic for each zone with json payloads
-- An mqtt topic with the global "ready" state of the alarm
+- An mqtt topic for each zone on/off payloads
+- An mqtt topic for the panel with a json payload of all of the panel
+  attributes, including `state` which produces a Home Assistant friendly state
 - Ability to define a list of zones that are on an expander board so that they
   are not cleared by alphanumeric messages.
 
@@ -45,8 +46,6 @@ IT professional.
 - Plans for granting "write" access to the alarm panel are on the back burner.
 I use this for sensor inputs only.  So you can't arm or disarm the alarm with
 this interface, which should add some security.
-- This is not an interface that enables all of the possible features of the
-AlarmDecoder system.
 
 # Configuration
 
@@ -57,3 +56,8 @@ if a zone is in a faulted state on startup, the zone will be initialized using
 the alphanumeric message and by default will not be treated as an expander
 zone until the zone changes state.  This can be annoying because zones tracked
 using the alphanumeric messages are not as reliable.
+
+# TODO
+
+- Write up some actual documentation for how to use this.
+- Consider whether to add support for "writing" to the panel (arm, disarm)

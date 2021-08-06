@@ -122,7 +122,6 @@ def main():
     # Set up an event handler and open the device
     device.on_zone_fault += handle_zone_fault
     device.on_zone_restore += handle_zone_restore
-    device.on_ready_changed += handle_ready_changed
     device.on_message += handle_message
 
     try:
@@ -144,7 +143,7 @@ def handle_zone_fault(device, zone):
             not device.get_zone(zone).expander):
         device.get_zone(zone).expander = True
     print("Zone", zone, "Fault.", flush=True)
-    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + str(zone), payload="on",
+    CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="on",
                    qos=0, retain=False)
 
 def handle_zone_restore(device, zone):
@@ -152,20 +151,8 @@ def handle_zone_restore(device, zone):
     Handles fault signals.
     """
     print("Zone", zone, "Clear.", flush=True)
-    CLIENT.publish(CONFIG['mqtt_topic'] + "/" + str(zone), payload="off",
+    CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="off",
                    qos=0, retain=False)
-
-def handle_ready_changed(device, ready):
-    """
-    Handles the ready state of the device.
-    """
-    if ready:
-        print("Device Ready", flush=True)
-        CLIENT.publish(CONFIG['mqtt_topic'], payload="off", qos=0,
-                       retain=False)
-    else:
-        print("Device Not Ready", flush=True)
-        CLIENT.publish(CONFIG['mqtt_topic'], payload="on", qos=0, retain=False)
 
 def handle_message(device, message):
     """
@@ -192,6 +179,7 @@ def handle_message(device, message):
                   "check_zone": message.check_zone,
                   "perimeter_only": message.perimeter_only,
                   "system_fault": message.system_fault}
+    # A Simple comparison of dicts works really well in this case
     if attributes != PANEL_ATTRIBS:
         PANEL_ATTRIBS = attributes.copy()
         print("Updating panel flags.", flush=True)
