@@ -195,7 +195,7 @@ def handle_message(device, message):
     if attributes != PANEL_ATTRIBS:
         PANEL_ATTRIBS = attributes
         print("Updating panel flags.", flush=True)
-        attributes['timestamp'] = message.timestamp  # Not used in compare
+        attributes['timestamp'] = str(message.timestamp)  # Not used in compare
         CLIENT.publish(CONFIG['mqtt_topic'] + "/panel",
                        payload=json.dumps(attributes), qos=0, retain=False)
 

@@ -1,7 +1,7 @@
 
 {
     "name": "AlarmDecoder-MQTT",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/alarmdecodermqtt",
     "slug": "alarmdecodermqtt",
     "description": "An MQTT interface to the AlarmDecoder API",
