@@ -16,6 +16,9 @@ CLIENT = mqtt.Client()
 # map for Paho acceptable TLS cert request options
 CERT_REQ_OPTIONS = {'none': ssl.CERT_NONE, 'required': ssl.CERT_REQUIRED}
 
+# Stores the Panel Attribute Flags
+PANEL_ATTRIBS = {}
+
 # Map for Paho acceptable TLS version options. Some options are
 # dependent on the OpenSSL install so catch exceptions
 TLS_VER_OPTIONS = dict()
@@ -120,6 +123,7 @@ def main():
     device.on_zone_fault += handle_zone_fault
     device.on_zone_restore += handle_zone_restore
     device.on_ready_changed += handle_ready_changed
+    device.on_message += handle_message
 
     try:
         with device.open():
@@ -162,6 +166,38 @@ def handle_ready_changed(device, ready):
     else:
         print("Device Not Ready", flush=True)
         CLIENT.publish(CONFIG['mqtt_topic'], payload="on", qos=0, retain=False)
+
+def handle_message(device, message):
+    """
+    Processes messages received from the panel.
+
+    Each message contains all of these flags.  While on_ready, on_arm, and ...
+    events are nice, it is more convenient to get all of the flags at once.
+    With all of the flags, we can publish a json packet with all of the flags
+    which allows them to be used as json attributes for the panel in addition
+    to being available for use as individual entities.
+    """
+    global PANEL_ATTRIBS
+    attributes = {"ready": message.ready,
+                  "armed_away": message.armed_away,
+                  "armed_home": message.armed_home,
+                  "zone_bypassed": message.zone_bypassed,
+                  "ac_power": message.ac_power,
+                  "chime_on": message.chime_on,
+                  "alarm_event_occurred": message.alarm_event_occurred,
+                  "alarm_sounding": message.alarm_sounding,
+                  "battery_low": message.battery_low,
+                  "entry_delay_off": message.entry_delay_off,
+                  "fire_alarm": message.fire_alarm,
+                  "check_zone": message.check_zone,
+                  "perimeter_only": message.perimeter_only,
+                  "system_fault": message.system_fault}
+    if attributes != PANEL_ATTRIBS:
+        PANEL_ATTRIBS = attributes
+        print("Updating panel flags.", flush=True)
+        attributes['timestamp'] = message.timestamp  # Not used in compare
+        CLIENT.publish(CONFIG['mqtt_topic'] + "/panel",
+                       payload=json.dumps(attributes), qos=0, retain=False)
 
 if __name__ == '__main__':
     main()
