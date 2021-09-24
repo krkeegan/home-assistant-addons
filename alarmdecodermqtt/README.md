@@ -61,6 +61,18 @@ using the alphanumeric messages are not as reliable.
 __retain__ - (boolean) Whether panel and zone states should be retained on the
 mqtt broker.
 
+# Topics
+
+__Zone State__ - is available at `<<mqtt_topic>>/zone/#` where # is the integer
+number of the zone.  The payload of this topic is either `ON` or `OFF`
+
+__Panel State__ - is available at `<<mqtt_topic>>/panel` The payload of this
+topic is a JSON object where the `state` key outputs `triggered`,
+`armed_custom_bypass`, `armed_away`, `armed_home`, or `disarmed`.
+
+__Availability State__ is available at `<<mqtt_topic>>/available` and the
+payload is either `online` or `offline`.
+
 # HomeAssistant Entities
 
 Here are some example configurations for defining entities in HomeAssistant.
@@ -73,8 +85,6 @@ binary_sensor motion:
     availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/1"
     device_class: "motion"
-    payload_on: "on"
-    payload_off: "off"
 ```
 
 **Door Sensor**
@@ -85,8 +95,6 @@ binary_sensor door:
     availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/3"
     device_class: "door"
-    payload_on: "on"
-    payload_off: "off"
 ```
 
 **Window Sensor**
@@ -97,8 +105,6 @@ binary_sensor window:
     availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/4"
     device_class: "window"
-    payload_on: "on"
-    payload_off: "off"
 ```
 
 **Alarm Panel Entity**
