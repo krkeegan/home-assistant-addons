@@ -38,6 +38,7 @@ This has very basic and rudimentary features:
   attributes, including `state` which produces a Home Assistant friendly state
 - Ability to define a list of zones that are on an expander board so that they
   are not cleared by alphanumeric messages.
+- An available topic that outputs `online` and `offline` status.
 
 # What this is NOT
 
@@ -66,6 +67,7 @@ Here are some example configurations for defining entities in HomeAssistant.
 binary_sensor motion:
   - platform: mqtt
     name: "Downstairs Motion"
+    availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/1"
     device_class: "motion"
     payload_on: "on"
@@ -77,6 +79,7 @@ binary_sensor motion:
 binary_sensor door:
   - platform: mqtt
     name: "Frontdoor"
+    availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/3"
     device_class: "door"
     payload_on: "on"
@@ -88,6 +91,7 @@ binary_sensor door:
 binary_sensor window:
   - platform: mqtt
     name: "Living Room"
+    availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/zone/4"
     device_class: "window"
     payload_on: "on"
@@ -99,14 +103,15 @@ binary_sensor window:
 alarm_control_panel:
   - platform: mqtt
     name: "Alarm Panel"
+    availability_topic: "alarmdecoder/available"
     state_topic: "alarmdecoder/panel"
     value_template: "{{value_json.state}}"
     command_topic: "alarmdecoder/panel/set"
     json_attributes_topic: "alarmdecoder/panel"
     json_attributes_template: >-
-      {{ 
+      {{
       {
-      "ready": value_json.ready, 
+      "ready": value_json.ready,
       "battery_low": value_json.battery_low,
       "armed_away": value_json.armed_away,
       "armed_home": value_json.armed_home,
