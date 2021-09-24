@@ -157,7 +157,7 @@ def handle_zone_fault(device, zone):
         device.get_zone(zone).expander = True
     print("Zone", zone, "Fault.", flush=True)
     CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="on",
-                   qos=0, retain=False)
+                   qos=0, retain=CONFIG['retain'])
 
 def handle_zone_restore(device, zone):
     """
@@ -165,7 +165,7 @@ def handle_zone_restore(device, zone):
     """
     print("Zone", zone, "Clear.", flush=True)
     CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="off",
-                   qos=0, retain=False)
+                   qos=0, retain=CONFIG['retain'])
 
 def handle_message(device, message):
     """
@@ -215,7 +215,8 @@ def handle_message(device, message):
             state = "disarmed"
         attributes['state'] = state
         CLIENT.publish(CONFIG['mqtt_topic'] + "/panel",
-                       payload=json.dumps(attributes), qos=0, retain=False)
+                       payload=json.dumps(attributes), qos=0,
+                       retain=CONFIG['retain'])
 
 if __name__ == '__main__':
     main()

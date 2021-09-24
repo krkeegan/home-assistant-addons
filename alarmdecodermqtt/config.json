@@ -25,7 +25,8 @@
         "ciphers": ""
       },
       "mqtt_topic": "alarmdecoder",
-      "expander_zones": []
+      "expander_zones": [],
+      "retain": true
     },
     "schema": {
       "alarmdecoder": {
@@ -45,7 +46,8 @@
         "ciphers": "str?"
       },
       "mqtt_topic": "str",
-      "expander_zones": ["int(0,)"]
+      "expander_zones": ["int(0,)"],
+      "retain": "bool"
     },
     "ports": {},
     "ports_description": {},

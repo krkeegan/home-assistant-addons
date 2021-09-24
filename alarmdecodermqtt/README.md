@@ -58,6 +58,9 @@ the alphanumeric message and by default will not be treated as an expander
 zone until the zone changes state.  This can be annoying because zones tracked
 using the alphanumeric messages are not as reliable.
 
+__retain__ - (boolean) Whether panel and zone states should be retained on the
+mqtt broker.
+
 # HomeAssistant Entities
 
 Here are some example configurations for defining entities in HomeAssistant.
