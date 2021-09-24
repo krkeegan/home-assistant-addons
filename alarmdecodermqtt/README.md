@@ -57,6 +57,77 @@ the alphanumeric message and by default will not be treated as an expander
 zone until the zone changes state.  This can be annoying because zones tracked
 using the alphanumeric messages are not as reliable.
 
+# HomeAssistant Entities
+
+Here are some example configurations for defining entities in HomeAssistant.
+
+**Motion Sensor**
+```yaml
+binary_sensor motion:
+  - platform: mqtt
+    name: "Downstairs Motion"
+    state_topic: "alarmdecoder/zone/1"
+    device_class: "motion"
+    payload_on: "on"
+    payload_off: "off"
+```
+
+**Door Sensor**
+```yaml
+binary_sensor door:
+  - platform: mqtt
+    name: "Frontdoor"
+    state_topic: "alarmdecoder/zone/3"
+    device_class: "door"
+    payload_on: "on"
+    payload_off: "off"
+```
+
+**Window Sensor**
+```yaml
+binary_sensor window:
+  - platform: mqtt
+    name: "Living Room"
+    state_topic: "alarmdecoder/zone/4"
+    device_class: "window"
+    payload_on: "on"
+    payload_off: "off"
+```
+
+**Alarm Panel Entity**
+```yaml
+alarm_control_panel:
+  - platform: mqtt
+    name: "Alarm Panel"
+    state_topic: "alarmdecoder/panel"
+    value_template: "{{value_json.state}}"
+    command_topic: "alarmdecoder/panel/set"
+    json_attributes_topic: "alarmdecoder/panel"
+    json_attributes_template: >-
+      {{ 
+      {
+      "ready": value_json.ready, 
+      "battery_low": value_json.battery_low,
+      "armed_away": value_json.armed_away,
+      "armed_home": value_json.armed_home,
+      "zone_bypassed": value_json.zone_bypassed,
+      "ac_power": value_json.ac_power,
+      "chime_on": value_json.chime_on,
+      "alarm_event_occurred": value_json.alarm_event_occurred,
+      "alarm_sounding": value_json.alarm_sounding,
+      "entry_delay_off": value_json.entry_delay_off,
+      "fire_alarm": value_json.fire_alarm,
+      "check_zone": value_json.check_zone,
+      "perimeter_only": value_json.perimeter_only,
+      "system_fault": value_json.system_fault,
+      "timestamp": value_json.timestamp
+      } | tojson
+      }}
+```
+
+*Note the `command_topic` doesn't do anything yet, but it is required.
+**Also note, that a keypad will not be displayed unless you define a `code` in the alarm panel entity.  This is a bug in HomeAssistant and I have reported it to them.
+
 # TODO
 
 - Write up some actual documentation for how to use this.
