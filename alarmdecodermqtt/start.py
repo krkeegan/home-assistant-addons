@@ -101,6 +101,19 @@ def main():
             print("SSL/TLS Config error = %s." % e, flush=True)
             return
 
+    # Set our last will
+    CLIENT.will_set(CONFIG['mqtt_topic'] + "/available", payload="offline",
+                    qos=0, retain=True)
+
+    # Setup our connect callback
+    def on_connect(client, userdata, flags, result):
+        if result == 0:
+            client.publish(CONFIG['mqtt_topic'] + "/available",
+                           payload="online", qos=0, retain=True)
+        else:
+            print("MQTT connection failed")
+    CLIENT.on_connect = on_connect
+
     try:
         CLIENT.connect(CONFIG['mqtt_broker']['mqtt_addr'],
                        CONFIG['mqtt_broker']['mqtt_port'], 60)

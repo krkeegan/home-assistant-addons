@@ -1,3 +1,6 @@
+# 0.2.1
+An attempt at creating an availability topic
+
 # 0.2.0
 This is a stable release, with all of the initial features I plan to add.
 
