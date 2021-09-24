@@ -1,3 +1,7 @@
+# 0.2.2
+Add retain option to config.
+Change zone payloads to `ON` and `OFF` to match HomeAssistant default.
+
 # 0.2.1
 An attempt at creating an availability topic
 
