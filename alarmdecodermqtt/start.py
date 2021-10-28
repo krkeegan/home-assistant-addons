@@ -93,6 +93,8 @@ def main():
                            **addl_tls_kwargs)
         except FileNotFoundError as e:
             print("Cannot locate a SSL/TLS file = %s." % e, flush=True)
+            print("certfile=%s, keyfile=%s, ciphers=%s" % (certfile,
+                  keyfile, ciphers))
             return
 
         except ssl.SSLError as e:
