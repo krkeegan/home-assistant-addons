@@ -1,4 +1,4 @@
-# 0.2.3
+# 0.2.6
 HomeAssistant seems to have changed.  Now optional string config
 settings are forced to ''.  Added additional checks.
 
