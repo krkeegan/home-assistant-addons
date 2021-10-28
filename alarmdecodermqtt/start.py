@@ -95,6 +95,7 @@ def main():
             print("Cannot locate a SSL/TLS file = %s." % e, flush=True)
             print("certfile=%s, keyfile=%s, ciphers=%s" % (certfile,
                   keyfile, ciphers))
+            print(CONFIG)
             return
 
         except ssl.SSLError as e:
