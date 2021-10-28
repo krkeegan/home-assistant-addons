@@ -1,3 +1,7 @@
+# 0.2.3
+HomeAssistant seems to have changed.  Now optional string config
+settings are forced to ''.  Added additional checks.
+
 # 0.2.2
 Add retain option to config.
 Change zone payloads to `ON` and `OFF` to match HomeAssistant default.
