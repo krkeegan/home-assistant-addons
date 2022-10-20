@@ -8,4 +8,4 @@ if [ ! -f '/config/syncthing/config.xml' ]; then
     sed -i 's|<address>127.0.0.1:8384</address>|<address>:8384</address>' /config/syncthing/config.xml
 fi
 /usr/sbin/nginx -c /etc/nginx/nginx.conf &
-syncthing --no-browser --no-upgrade --home=/config/syncthing/
+syncthing -no-browser -no-upgrade -home=/config/syncthing/
