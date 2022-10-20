@@ -17,5 +17,6 @@
     "map": ["share:rw", "config:rw", "backup:rw", "addons:rw"],
     "arch": ["armv7", "armhf", "amd64", "aarch64", "i386"],
     "ingress": true,
-    "ingress_port": 8099
+    "ingress_port": 8099,
+    "init": false
 }
