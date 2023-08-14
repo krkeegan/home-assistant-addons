@@ -51,20 +51,23 @@ try:
 except AttributeError:
     pass
 
+def log(message):
+    print(time.strftime("%Y-%m-%d %H:%M:%S"), " ", message, flush=True)
+
 def main():
     """
     Example application that opens a device that has been exposed to the
     network with ser2sock or similar serial-to-IP software.
     """
 
-    print("Connecting to MQTT Broker.", flush=True)
+    log("Connecting to MQTT Broker.")
     if 'mqtt_user' in CONFIG['mqtt_broker']:
-        print("Using Username/Password.", flush=True)
+        log("Using Username/Password.")
         CLIENT.username_pw_set(CONFIG['mqtt_broker']['mqtt_user'],
                                password=CONFIG['mqtt_broker']['mqtt_pass'])
 
     if 'ca_cert' in CONFIG['mqtt_broker']:
-        print("Using SSL/TLS Connection.", flush=True)
+        log(" Using SSL/TLS Connection.")
         addl_tls_kwargs = {}
         tls_version = TLS_VER_OPTIONS.get(
             CONFIG['mqtt_broker']['tls_version'], None
@@ -92,14 +95,14 @@ def main():
                            ciphers=ciphers,
                            **addl_tls_kwargs)
         except FileNotFoundError as e:
-            print("Cannot locate a SSL/TLS file = %s." % e, flush=True)
-            print("ca_certs=%s, certfile=%s, keyfile=%s, ciphers=%s" %
+            log("Cannot locate a SSL/TLS file = %s." % e)
+            log("ca_certs=%s, certfile=%s, keyfile=%s, ciphers=%s" %
                   (CONFIG['mqtt_broker']['ca_cert'], certfile, keyfile, 
                    ciphers))
             return
 
         except ssl.SSLError as e:
-            print("SSL/TLS Config error = %s." % e, flush=True)
+            log("SSL/TLS Config error = %s." % e)
             return
 
     # Set our last will
@@ -112,20 +115,20 @@ def main():
             client.publish(CONFIG['mqtt_topic'] + "/available",
                            payload="online", qos=0, retain=True)
         else:
-            print("MQTT connection failed")
+            log("MQTT connection failed")
     CLIENT.on_connect = on_connect
 
     try:
         CLIENT.connect(CONFIG['mqtt_broker']['mqtt_addr'],
                        CONFIG['mqtt_broker']['mqtt_port'], 60)
     except Exception as ex:
-        print('Unable to connect to MQTT Broker:', ex)
+        log("Unable to connect to MQTT Broker: %s" % ex)
         return
 
     # Start the loop
     CLIENT.loop_start()
 
-    print("Connecting to AlarmDecoder.", flush=True)
+    log("Connecting to AlarmDecoder.")
 
     # Retrieve an AD2 device that has been exposed with ser2sock
     device = AlarmDecoder(SocketDevice(interface=(
@@ -144,7 +147,7 @@ def main():
                 # This is the main loop, we stay here until terminated
                 time.sleep(1)
     except Exception as ex:
-        print('Exception:', ex)
+        log("Exception: %s" % ex)
         return
 
 def handle_zone_fault(device, zone):
@@ -156,7 +159,7 @@ def handle_zone_fault(device, zone):
     if (zone in CONFIG['expander_zones'] and
             not device.get_zone(zone).expander):
         device.get_zone(zone).expander = True
-    print("Zone", zone, "Fault.", flush=True)
+    log("Zone %s Fault." % zone)
     CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="ON",
                    qos=0, retain=CONFIG['retain'])
 
@@ -164,7 +167,7 @@ def handle_zone_restore(device, zone):
     """
     Handles fault signals.
     """
-    print("Zone", zone, "Clear.", flush=True)
+    log("Zone %s Clear." % zone)
     CLIENT.publish(CONFIG['mqtt_topic'] + "/zone/" + str(zone), payload="OFF",
                    qos=0, retain=CONFIG['retain'])
 
@@ -196,7 +199,7 @@ def handle_message(device, message):
     # A Simple comparison of dicts works really well in this case
     if attributes != PANEL_ATTRIBS:
         PANEL_ATTRIBS = attributes.copy()
-        print("Updating panel flags.", flush=True)
+        log("Updating panel flags.")
         attributes['timestamp'] = str(message.timestamp)  # Not used in compare
         # Add the state attribute, matches states available in HomeAssistant
         state = ""
