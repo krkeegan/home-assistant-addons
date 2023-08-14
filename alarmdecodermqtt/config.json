@@ -1,7 +1,7 @@
 
 {
     "name": "AlarmDecoder-MQTT",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/alarmdecodermqtt",
     "slug": "alarmdecodermqtt",
     "description": "An MQTT interface to the AlarmDecoder API",
@@ -55,5 +55,6 @@
     "map": ["share:rw", "config:rw", "backup:rw", "addons:rw"],
     "arch": ["armv7", "armhf", "amd64", "aarch64", "i386"],
     "ingress": false,
-    "ingress_port": 8099
+    "ingress_port": 8099,
+    "init": false
 }

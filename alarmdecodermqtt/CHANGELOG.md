@@ -1,3 +1,6 @@
+# 0.2.8
+Bug fix for change introduced in HA 2022-06
+
 # 0.2.7
 - Added time to log entries
 - Try and reconnect when connection to alarmdecoder is lost
