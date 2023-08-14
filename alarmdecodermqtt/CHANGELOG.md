@@ -1,3 +1,7 @@
+# 0.3.0
+Better MQTT Availability Topic Handling, now tied to actual AlarmDecoder
+connection.
+
 # 0.2.9
 Fix error in read handler arguments
 

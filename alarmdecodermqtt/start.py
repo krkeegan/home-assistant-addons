@@ -22,6 +22,8 @@ PANEL_ATTRIBS = {}
 # Tracks last message time, used to reconnect if not seen
 READ_TIMESTAMP = 0
 CONNECT_TIMESTAMP = 0
+RECONNECT_FLAG = False
+MQTT_ONLINE_FLAG = False
 
 # Map for Paho acceptable TLS version options. Some options are
 # dependent on the OpenSSL install so catch exceptions
@@ -64,6 +66,7 @@ def main():
     network with ser2sock or similar serial-to-IP software.
     """
 
+    global MQTT_ONLINE_FLAG, RECONNECT_FLAG
     log("Connecting to MQTT Broker.")
     if 'mqtt_user' in CONFIG['mqtt_broker']:
         log("Using Username/Password.")
@@ -71,7 +74,7 @@ def main():
                                password=CONFIG['mqtt_broker']['mqtt_pass'])
 
     if 'ca_cert' in CONFIG['mqtt_broker']:
-        log(" Using SSL/TLS Connection.")
+        log("Using SSL/TLS Connection.")
         addl_tls_kwargs = {}
         tls_version = TLS_VER_OPTIONS.get(
             CONFIG['mqtt_broker']['tls_version'], None
@@ -153,17 +156,27 @@ def main():
         # Try to reconnect every 60 seconds if no message seen in last 30 seconds
         now = time.time()
         if ((CONNECT_TIMESTAMP + 60 < now) and (READ_TIMESTAMP + 30 < now)):
+            log("Connection to AlarmDecoder lost.")
+            if (MQTT_ONLINE_FLAG):
+                MQTT_ONLINE_FLAG = False
+                CLIENT.publish(CONFIG['mqtt_topic'] + "/available",
+                            payload="offline", qos=0, retain=True)
+
             device.close()
             connect_alarmdecoder(device)
-
+        elif (RECONNECT_FLAG):
+            MQTT_ONLINE_FLAG = True
+            RECONNECT_FLAG = False
+            CLIENT.publish(CONFIG['mqtt_topic'] + "/available",
+                           payload="online", qos=0, retain=True)
 
 def connect_alarmdecoder(device):
-    global CONNECT_TIMESTAMP
+    global CONNECT_TIMESTAMP, RECONNECT_FLAG
     CONNECT_TIMESTAMP = time.time()
     log("Connecting to AlarmDecoder.")
-
     try:
         device.open()
+        RECONNECT_FLAG = True
     except Exception as ex:
         log("Exception: %s" % ex)
         return
