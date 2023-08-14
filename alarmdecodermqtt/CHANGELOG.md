@@ -1,3 +1,6 @@
+# 0.2.9
+Fix error in read handler arguments
+
 # 0.2.8
 Bug fix for change introduced in HA 2022-06
 

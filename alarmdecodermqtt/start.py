@@ -168,7 +168,7 @@ def connect_alarmdecoder(device):
         log("Exception: %s" % ex)
         return
 
-def handle_read(device, sender):
+def handle_read(device, data):
     global READ_TIMESTAMP
     READ_TIMESTAMP = time.time()
 
