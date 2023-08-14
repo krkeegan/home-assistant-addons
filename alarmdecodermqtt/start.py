@@ -19,6 +19,10 @@ CERT_REQ_OPTIONS = {'none': ssl.CERT_NONE, 'required': ssl.CERT_REQUIRED}
 # Stores the Panel Attribute Flags
 PANEL_ATTRIBS = {}
 
+# Tracks last message time, used to reconnect if not seen
+READ_TIMESTAMP = 0
+CONNECT_TIMESTAMP = 0
+
 # Map for Paho acceptable TLS version options. Some options are
 # dependent on the OpenSSL install so catch exceptions
 TLS_VER_OPTIONS = dict()
@@ -128,8 +132,7 @@ def main():
     # Start the loop
     CLIENT.loop_start()
 
-    log("Connecting to AlarmDecoder.")
-
+    # Connect Alarmdecoder and loop
     # Retrieve an AD2 device that has been exposed with ser2sock
     device = AlarmDecoder(SocketDevice(interface=(
         CONFIG['alarmdecoder']['alarm_addr'],
@@ -140,15 +143,34 @@ def main():
     device.on_zone_fault += handle_zone_fault
     device.on_zone_restore += handle_zone_restore
     device.on_message += handle_message
+    device.on_read += handle_read
+
+    connect_alarmdecoder(device)
+    while True:
+        # This is the main loop, we stay here until terminated
+        time.sleep(.1)
+
+        # Try to reconnect every 60 seconds if no message seen in last 30 seconds
+        now = time.time()
+        if ((CONNECT_TIMESTAMP + 60 < now) and (READ_TIMESTAMP + 30 < now)):
+            device.close()
+            connect_alarmdecoder(device)
+
+
+def connect_alarmdecoder(device):
+    global CONNECT_TIMESTAMP
+    CONNECT_TIMESTAMP = time.time()
+    log("Connecting to AlarmDecoder.")
 
     try:
-        with device.open():
-            while True:
-                # This is the main loop, we stay here until terminated
-                time.sleep(1)
+        device.open()
     except Exception as ex:
         log("Exception: %s" % ex)
         return
+
+def handle_read(device, sender):
+    global READ_TIMESTAMP
+    READ_TIMESTAMP = time.time()
 
 def handle_zone_fault(device, zone):
     """
