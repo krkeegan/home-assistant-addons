@@ -1,3 +1,7 @@
+# 0.2.7
+- Added time to log entries
+- Try and reconnect when connection to alarmdecoder is lost
+
 # 0.2.6
 HomeAssistant seems to have changed.  Now optional string config
 settings are forced to ''.  Added additional checks.

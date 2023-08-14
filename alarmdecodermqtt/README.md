@@ -145,5 +145,5 @@ alarm_control_panel:
 # TODO
 
 - Write up some actual documentation for how to use this.
-- Better logging (timestamps, control logging level, more messages)
+- Better logging (control logging level, more messages)
 - Consider whether to add support for "writing" to the panel (arm, disarm)
