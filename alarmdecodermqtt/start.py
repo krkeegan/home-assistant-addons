@@ -163,6 +163,7 @@ def main():
                             payload="offline", qos=0, retain=True)
 
             device.close()
+            time.sleep(5)
             connect_alarmdecoder(device)
         elif (RECONNECT_FLAG):
             MQTT_ONLINE_FLAG = True
