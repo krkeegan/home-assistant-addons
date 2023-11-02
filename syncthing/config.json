@@ -1,7 +1,7 @@
 
 {
     "name": "Syncthing",
-    "version": "1.22.0",
+    "version": "1.25.0",
     "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/syncthing",
     "slug": "syncthing",
     "description": "Syncthing continuous file synchronization service",
