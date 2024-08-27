@@ -1,3 +1,6 @@
+# 0.3.2
+Enable access to `/ssl` folder so you can use the certs installed locally.
+
 # 0.3.0
 Better MQTT Availability Topic Handling, now tied to actual AlarmDecoder
 connection.
