@@ -11,7 +11,7 @@ CONFIG = json.load(f)
 f.close()
 
 # MQTT Client
-CLIENT = mqtt.Client({'callback_api_version': mqtt.CallbackAPIVersion.VERSION1, 'client_id': CONFIG['mqtt_broker'].get('client_id', "alarmdecoder"), 'clean_session': False})
+CLIENT = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION1, client_id=CONFIG['mqtt_broker'].get('client_id', "alarmdecoder"), clean_session=False)
 
 # map for Paho acceptable TLS cert request options
 CERT_REQ_OPTIONS = {'none': ssl.CERT_NONE, 'required': ssl.CERT_REQUIRED}
