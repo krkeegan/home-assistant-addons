@@ -1,3 +1,7 @@
+# 0.3.5
+Add `client_id` not really necessary to change.
+Update Paho call to suppress the deprecation warning.
+
 # 0.3.4
 Specifying `ca_cert` is now optional, if you have a cert from a trusted
 authority, you no longer need to specifiy it here.
