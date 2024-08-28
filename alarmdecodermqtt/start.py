@@ -73,7 +73,7 @@ def main():
         CLIENT.username_pw_set(CONFIG['mqtt_broker']['mqtt_user'],
                                password=CONFIG['mqtt_broker']['mqtt_pass'])
 
-    if 'ca_cert' in CONFIG['mqtt_broker']:
+    if CONFIG['mqtt_broker'].get('tls_enable', False):
         log("Using SSL/TLS Connection.")
         addl_tls_kwargs = {}
         tls_version = TLS_VER_OPTIONS.get(
@@ -87,20 +87,19 @@ def main():
         if cert_reqs is not None:
             addl_tls_kwargs['cert_reqs'] = cert_reqs
         certfile = CONFIG['mqtt_broker'].get('certfile', None)
-        if certfile == '':
-            certfile = None
+        if certfile:
+            addl_tls_kwargs['certfile'] = certfile
         keyfile = CONFIG['mqtt_broker'].get('keyfile', None)
-        if keyfile == '':
-            keyfile = None
+        if keyfile:
+            addl_tls_kwargs['keyfile'] = keyfile
         ciphers = CONFIG['mqtt_broker'].get('ciphers', None)
-        if ciphers == '':
-            ciphers = None
+        if ciphers:
+            addl_tls_kwargs['ciphers'] = ciphers
+        ca_cert = CONFIG['mqtt_broker'].get('ca_cert', None)
+        if ca_cert:
+            addl_tls_kwargs['ca_certs'] = ca_cert
         try:
-            CLIENT.tls_set(ca_certs=CONFIG['mqtt_broker']['ca_cert'],
-                           certfile=certfile,
-                           keyfile=keyfile,
-                           ciphers=ciphers,
-                           **addl_tls_kwargs)
+            CLIENT.tls_set(**addl_tls_kwargs)
         except FileNotFoundError as e:
             log("Cannot locate a SSL/TLS file = %s." % e)
             log("ca_certs=%s, certfile=%s, keyfile=%s, ciphers=%s" %
