@@ -1,3 +1,6 @@
+# 0.4.0
+Upgrade Paho to Version2 API
+
 # 0.3.5.1
 Add `client_id` not really necessary to change.
 Update Paho call to suppress the deprecation warning.

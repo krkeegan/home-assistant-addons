@@ -11,7 +11,7 @@ CONFIG = json.load(f)
 f.close()
 
 # MQTT Client
-CLIENT = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION1, client_id=CONFIG['mqtt_broker'].get('client_id', "alarmdecoder"), clean_session=False)
+CLIENT = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2, client_id=CONFIG['mqtt_broker'].get('client_id', "alarmdecoder"), clean_session=False)
 
 # map for Paho acceptable TLS cert request options
 CERT_REQ_OPTIONS = {'none': ssl.CERT_NONE, 'required': ssl.CERT_REQUIRED}
@@ -116,8 +116,8 @@ def main():
                     qos=0, retain=True)
 
     # Setup our connect callback
-    def on_connect(client, userdata, flags, result):
-        if result == 0:
+    def on_connect(client, userdata, flags, reason_code, properties):
+        if reason_code == 0:
             client.publish(CONFIG['mqtt_topic'] + "/available",
                            payload="online", qos=0, retain=True)
         else:
