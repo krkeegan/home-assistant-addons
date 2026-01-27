@@ -1,0 +1,36 @@
+#!/usr/bin/with-contenv bashio
+set -euo pipefail
+
+log_level=$(bashio::config 'log_level')
+rendering_mode=$(bashio::config 'rendering_mode')
+chrome_args=$(bashio::config 'chrome_args')
+enable_metrics=$(bashio::config 'enable_metrics')
+
+if [ -n "$log_level" ] && [ "$log_level" != "null" ]; then
+  export LOG_LEVEL="$log_level"
+fi
+
+if [ -n "$rendering_mode" ] && [ "$rendering_mode" != "null" ]; then
+  export RENDERING_MODE="$rendering_mode"
+fi
+
+if [ -n "$chrome_args" ] && [ "$chrome_args" != "null" ]; then
+  export CHROME_ARGS="$chrome_args"
+fi
+
+if [ -n "$enable_metrics" ] && [ "$enable_metrics" != "null" ]; then
+  export ENABLE_METRICS="$enable_metrics"
+fi
+
+if [ -x /usr/bin/chromium-browser ]; then
+  BROWSER_PATH="/usr/bin/chromium-browser"
+elif [ -x /usr/bin/chromium ]; then
+  BROWSER_PATH="/usr/bin/chromium"
+else
+  bashio::log.error "Chromium not found. Ensure chromium is installed."
+  exit 1
+fi
+
+bashio::log.info "Launching Grafana Image Renderer"
+
+exec /usr/local/bin/grafana-image-renderer server --browser.path="$BROWSER_PATH"

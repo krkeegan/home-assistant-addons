@@ -1,0 +1,4 @@
+#!/usr/bin/with-contenv bashio
+set -euo pipefail
+
+bashio::log.info "Starting Grafana Image Renderer add-on"

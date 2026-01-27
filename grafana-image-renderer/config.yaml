@@ -1,0 +1,21 @@
+name: Grafana Image Renderer
+version: 5.4.0
+slug: grafana_image_renderer
+url: https://github.com/krkeegan/home-assistant-addons/tree/main/grafana-image-renderer
+description: Render images for Grafana dashboards.
+arch:
+  - aarch64
+  - amd64
+startup: services
+boot: auto
+init: false
+ingress: false
+panel_icon: mdi:chart-areaspline
+options:
+  log_level: info
+  rendering_mode: default
+  chrome_args: ""
+schema:
+  log_level: list(trace|debug|info|warn|error)
+  rendering_mode: list(default|clustered)
+  chrome_args: str?

@@ -1,0 +1,4 @@
+#!/usr/bin/with-contenv bashio
+set -euo pipefail
+
+bashio::log.warning "Grafana Image Renderer exited"
