@@ -57,9 +57,6 @@ jobs:
               '.build_from.aarch64 = $tag | .build_from.amd64 = $tag' \
               grafana-image-renderer/build.json > grafana-image-renderer/build.json.tmp
             mv grafana-image-renderer/build.json.tmp grafana-image-renderer/build.json
-
-            # Update Dockerfile default ARG BUILD_FROM
-            sed -i "s|ARG BUILD_FROM=.*|ARG BUILD_FROM=ghcr.io/home-assistant/base:$NEW_TAG|" grafana-image-renderer/Dockerfile
           else
             echo "needs_update=false" >> "$GITHUB_OUTPUT"
             echo "Base image is already up to date ($CURRENT_TAG)."
