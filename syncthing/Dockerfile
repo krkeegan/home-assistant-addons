@@ -1,11 +1,11 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/base:latest
+FROM ${BUILD_FROM}
 
-ARG BUILD_VERSION
-ARG BUILD_ARCH
+ARG BUILD_VERSION=2.1.6
+ARG BUILD_ARCH=amd64
 
 # Add env
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 
 # Setup base
 RUN apk add --no-cache curl
