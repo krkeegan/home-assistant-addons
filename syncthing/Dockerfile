@@ -8,9 +8,8 @@ ARG BUILD_ARCH
 ENV LANG C.UTF-8
 
 # Setup base
-RUN apk add --no-cache nginx
+RUN apk add --no-cache nginx curl
 RUN apk add --no-cache -U --virtual .build-deps \
-        curl \
 	tar \
  && SYNCTHING_VERSION=v${BUILD_VERSION%-*} \
  && if [ ${BUILD_ARCH} == "armhf" -o ${BUILD_ARCH} == "armv7" ]; then syncthingarch=arm;\
