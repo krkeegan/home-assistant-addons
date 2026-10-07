@@ -1,5 +1,5 @@
 name: Grafana Image Renderer
-version: 5.4.0
+version: 5.4.1
 slug: grafana_image_renderer
 url: https://github.com/krkeegan/home-assistant-addons/tree/main/grafana-image-renderer
 description: Render images for Grafana dashboards.
@@ -15,7 +15,13 @@ options:
   log_level: info
   rendering_mode: default
   chrome_args: ""
+  auth_token: ""
+  env_vars: []
 schema:
   log_level: list(trace|debug|info|warn|error)
   rendering_mode: list(default|clustered)
   chrome_args: str?
+  auth_token: str?
+  env_vars:
+    - name: match(^[a-zA-Z_][a-zA-Z0-9_]*$)
+      value: str

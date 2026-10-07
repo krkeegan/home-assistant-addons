@@ -7,22 +7,29 @@ a plugin has been deprecated by Grafana for a while. Grafana recommends running 
 
 ## Configuration
 
-Generally, there is no need to set anything here. This addon works fine out of the box.
-
-- `log_level`: Logging level (trace, debug, info, warn, error).
-- `rendering_mode`: Renderer mode (default, clustered).
+- `log_level`: Logging level (`trace`, `debug`, `info`, `warn`, `error`). Default: `info`.
+- `rendering_mode`: Renderer mode (`default`, `clustered`). Default: `default`.
 - `chrome_args`: Extra Chromium arguments (optional).
+- `auth_token`: Secret token used to authenticate render requests from Grafana. Required for Grafana add-on v13.0+ (optional/blank for older versions).
+- `env_vars`: List of custom environment variable `name` and `value` pairs to pass to the renderer service (optional).
 
 ## Grafana Addon Configuration
 
-To get Grafana to render images using the renderer you need to include at least these env-vars in the Grafana plugin:
+To get Grafana to render images using the renderer, include these environment variables in your Grafana add-on configuration:
+
 ```yaml
 env_vars:
   - name: GF_RENDERING_SERVER_URL
     value: http://e92f333d-grafana-image-renderer:8081/render
   - name: GF_RENDERING_CALLBACK_URL
     value: http://a0d7b954-grafana:3000/
+  - name: GF_RENDERING_RENDERER_TOKEN
+    value: "your_secret_token_here"
 ```
+
+> [!NOTE]
+> Starting with Grafana add-on v13.0+, Grafana disallows the default token (`"-"`) in production settings and will fail to start without a custom token.
+> Ensure `GF_RENDERING_RENDERER_TOKEN` in Grafana matches `auth_token` configured in this add-on.
 
 Once you add these vars, restart Grafana.
 

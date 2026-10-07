@@ -22,6 +22,25 @@ if [ -n "$enable_metrics" ] && [ "$enable_metrics" != "null" ]; then
   export ENABLE_METRICS="$enable_metrics"
 fi
 
+if bashio::config.has_value 'env_vars'; then
+  for var in $(bashio::config 'env_vars|keys'); do
+    name=$(bashio::config "env_vars[${var}].name")
+    value=$(bashio::config "env_vars[${var}].value")
+    bashio::log.info "Setting custom environment variable: ${name}"
+    export "${name}=${value}"
+  done
+fi
+
+if bashio::config.has_value 'auth_token'; then
+  auth_token=$(bashio::config 'auth_token')
+  if [ -n "$auth_token" ] && [ "$auth_token" != "null" ]; then
+    if [ -n "${AUTH_TOKEN:-}" ]; then
+      bashio::log.warning "Both 'auth_token' and 'AUTH_TOKEN' in env_vars are set. Using 'auth_token'."
+    fi
+    export AUTH_TOKEN="$auth_token"
+  fi
+fi
+
 if [ -x /usr/bin/chromium-browser ]; then
   BROWSER_PATH="/usr/bin/chromium-browser"
 elif [ -x /usr/bin/chromium ]; then
