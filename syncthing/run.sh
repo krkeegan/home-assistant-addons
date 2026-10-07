@@ -1,13 +1,15 @@
 #!/bin/bash
 set -e
 
+export HOME=/config/syncthing/
+export STNOPORTPROBING=1
+
 if [ ! -f '/config/syncthing/config.xml' ]; then
     # Run syncthing to generate initial configuration files, then edit
     # config.xml to remove 127.0.0.1 limit from the GUI address.
-    syncthing -generate=/config/syncthing
+    syncthing --home=/config/syncthing generate --no-port-probing
     sed -i 's|<address>127.0.0.1:8384</address>|<address>:8384</address>' /config/syncthing/config.xml
 fi
-export HOME=/config/syncthing/
 
 # Syncthing issues a startup warning when run as root ("Syncthing should not run
 # as a privileged or system user"). Since Home Assistant requires root to read
@@ -44,4 +46,4 @@ dismiss_privileged_warning() {
 dismiss_privileged_warning &
 
 /usr/sbin/nginx -c /etc/nginx/nginx.conf &
-syncthing --no-browser --no-upgrade --home=/config/syncthing/
+exec syncthing --no-browser --no-upgrade --home=/config/syncthing/

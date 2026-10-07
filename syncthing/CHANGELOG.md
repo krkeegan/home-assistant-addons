@@ -1,3 +1,7 @@
+# 2.1.6
+- Upgrade to Syncthing v2.1.6 (v2 release)
+- Update startup script for Syncthing v2 CLI syntax and disable port probing
+
 # 1.25.0
 - Bump to Syncthing 1.25.0
 - Automatically dismiss privileged user startup warning via local REST API
