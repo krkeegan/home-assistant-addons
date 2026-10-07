@@ -1,0 +1,70 @@
+name: Check and Update Syncthing
+
+'on':
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-syncthing:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for new Syncthing release
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch latest release tag from syncthing/syncthing
+          LATEST_TAG=$(gh release view --repo syncthing/syncthing --json tagName -q .tagName 2>/dev/null || curl -s https://api.github.com/repos/syncthing/syncthing/releases/latest | jq -r .tag_name)
+          NEW_VERSION="${LATEST_TAG#v}"
+
+          CURRENT_VERSION=$(jq -r .version syncthing/config.json)
+
+          echo "Latest Syncthing version: $NEW_VERSION"
+          echo "Current addon version:    $CURRENT_VERSION"
+
+          if [ -z "$NEW_VERSION" ] || [ "$NEW_VERSION" = "null" ]; then
+            echo "Error: Could not determine latest Syncthing version."
+            exit 1
+          fi
+
+          if [ "$NEW_VERSION" != "$CURRENT_VERSION" ]; then
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+            echo "new_version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+            echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
+
+            # Update version in config.json
+            jq --arg v "$NEW_VERSION" '.version = $v' syncthing/config.json > syncthing/config.json.tmp
+            mv syncthing/config.json.tmp syncthing/config.json
+
+            # Prepend new version entry to CHANGELOG.md if not already present
+            if ! grep -q "# $NEW_VERSION" syncthing/CHANGELOG.md; then
+              CHANGELOG_ENTRY="# $NEW_VERSION"$'\n'"- Update Syncthing to v$NEW_VERSION"$'\n'
+              echo -e "${CHANGELOG_ENTRY}\n$(cat syncthing/CHANGELOG.md)" > syncthing/CHANGELOG.md
+            fi
+          else
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+            echo "Syncthing addon is already up to date ($CURRENT_VERSION)."
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_release.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Bump Syncthing to v${{ steps.check_release.outputs.new_version }}"
+          title: "Bump Syncthing to v${{ steps.check_release.outputs.new_version }}"
+          body: |
+            Automated update of the Syncthing add-on from version `${{ steps.check_release.outputs.current_version }}` to `v${{ steps.check_release.outputs.new_version }}`.
+
+            Release notes: https://github.com/syncthing/syncthing/releases/tag/v${{ steps.check_release.outputs.new_version }}
+          branch: "update-syncthing-v${{ steps.check_release.outputs.new_version }}"
+          delete-branch: true
