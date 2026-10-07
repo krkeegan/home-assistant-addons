@@ -8,7 +8,7 @@ ARG BUILD_ARCH
 ENV LANG C.UTF-8
 
 # Setup base
-RUN apk add --no-cache nginx curl
+RUN apk add --no-cache curl
 RUN apk add --no-cache -U --virtual .build-deps \
 	tar \
  && SYNCTHING_VERSION=v${BUILD_VERSION%-*} \
@@ -25,7 +25,6 @@ RUN apk add --no-cache -U --virtual .build-deps \
  && apk del .build-deps
 
 COPY run.sh /
-COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN chmod a+x /run.sh
 

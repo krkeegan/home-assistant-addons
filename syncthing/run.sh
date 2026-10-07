@@ -45,5 +45,4 @@ dismiss_privileged_warning() {
 
 dismiss_privileged_warning &
 
-/usr/sbin/nginx -c /etc/nginx/nginx.conf &
 exec syncthing --no-browser --no-upgrade --home=/config/syncthing/
