@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/base:3.24-2026.08.0
 FROM ${BUILD_FROM}
 
 ARG BUILD_ARCH
