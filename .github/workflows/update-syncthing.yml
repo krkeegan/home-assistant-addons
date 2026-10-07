@@ -68,3 +68,72 @@ jobs:
             Release notes: https://github.com/syncthing/syncthing/releases/tag/v${{ steps.check_release.outputs.new_version }}
           branch: "update-syncthing-v${{ steps.check_release.outputs.new_version }}"
           delete-branch: true
+
+  update-base-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for new Home Assistant base image release
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Fetch latest release tag from home-assistant/docker-base
+          LATEST_RELEASE=$(gh release view --repo home-assistant/docker-base --json tagName -q .tagName 2>/dev/null || curl -s https://api.github.com/repos/home-assistant/docker-base/releases/latest | jq -r .tag_name)
+
+          if [ -z "$LATEST_RELEASE" ] || [ "$LATEST_RELEASE" = "null" ]; then
+            echo "Error: Could not determine latest Home Assistant docker-base release."
+            exit 1
+          fi
+
+          # Get the corresponding image tag from ghcr.io/home-assistant/base (selecting the latest Alpine version for that release)
+          TOKEN=$(curl -s "https://ghcr.io/token?scope=repository:home-assistant/base:pull" | jq -r .token)
+          NEW_TAG=$(curl -s "https://ghcr.io/v2/home-assistant/base/tags/list" -H "Authorization: Bearer $TOKEN" | jq -r '.tags[]' | grep "$LATEST_RELEASE" | sort -V | tail -n 1)
+
+          if [ -z "$NEW_TAG" ]; then
+            echo "Error: Could not find matching container tag in ghcr.io/home-assistant/base for release $LATEST_RELEASE."
+            exit 1
+          fi
+
+          CURRENT_IMAGE=$(jq -r '.build_from.amd64' syncthing/build.json)
+          CURRENT_TAG="${CURRENT_IMAGE##*:}"
+
+          echo "Latest base release: $LATEST_RELEASE"
+          echo "Latest base tag:     $NEW_TAG"
+          echo "Current base tag:    $CURRENT_TAG"
+
+          if [ "$NEW_TAG" != "$CURRENT_TAG" ]; then
+            echo "needs_update=true" >> "$GITHUB_OUTPUT"
+            echo "new_tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+            echo "current_tag=$CURRENT_TAG" >> "$GITHUB_OUTPUT"
+            echo "latest_release=$LATEST_RELEASE" >> "$GITHUB_OUTPUT"
+
+            # Update build.json
+            jq --arg tag "ghcr.io/home-assistant/base:$NEW_TAG" \
+              '.build_from.aarch64 = $tag | .build_from.amd64 = $tag' \
+              syncthing/build.json > syncthing/build.json.tmp
+            mv syncthing/build.json.tmp syncthing/build.json
+          else
+            echo "needs_update=false" >> "$GITHUB_OUTPUT"
+            echo "Base image is already up to date ($CURRENT_TAG)."
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_release.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Bump Syncthing base image to ${{ steps.check_release.outputs.new_tag }}"
+          title: "Bump Syncthing base image to ${{ steps.check_release.outputs.new_tag }}"
+          body: |
+            Automated update of the Syncthing add-on base image from `${{ steps.check_release.outputs.current_tag }}` to `${{ steps.check_release.outputs.new_tag }}`.
+
+            Release notes: https://github.com/home-assistant/docker-base/releases/tag/${{ steps.check_release.outputs.latest_release }}
+          branch: "update-syncthing-base-${{ steps.check_release.outputs.new_tag }}"
+          delete-branch: true
