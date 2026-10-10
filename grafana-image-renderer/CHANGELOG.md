@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.12.6
+- Update Grafana Image Renderer to v5.12.6
+
 ## 5.12.5
 - Update Grafana Image Renderer upstream binary to v5.12.5.
 - Switch base image to official `ghcr.io/home-assistant/base`.
