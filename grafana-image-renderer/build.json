@@ -4,6 +4,6 @@
     "amd64": "ghcr.io/home-assistant/base:3.24-2026.08.0"
   },
   "args": {
-    "GRAFANA_IMAGE_RENDERER_VERSION": "5.12.5"
+    "GRAFANA_IMAGE_RENDERER_VERSION": "5.12.6"
   }
 }

@@ -1,5 +1,5 @@
 name: Grafana Image Renderer
-version: 5.12.5
+version: 5.12.6
 slug: grafana_image_renderer
 url: https://github.com/krkeegan/home-assistant-addons/tree/main/grafana-image-renderer
 description: Render images for Grafana dashboards.
