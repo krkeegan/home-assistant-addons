@@ -1,22 +1,35 @@
-
 {
-    "name": "Syncthing",
-    "version": "2.1.6",
-    "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/syncthing",
-    "slug": "syncthing",
-    "description": "Syncthing continuous file synchronization service",
-    "startup": "system",
-    "boot": "auto",
-    "options": {},
-    "schema": {},
-    "ports": {"22000/tcp": 22000, "21027/udp": 21027, "8384/tcp": null},
-    "ports_description": {"22000/tcp": "Sync Protocol Listen Port.  Must match listenAddress in config.", 
-                          "21027/udp": "Sync Protocol Discovery and Multicast Port. Must match localAnnouncePort in config.",
-                          "8384/tcp": "GUI and Rest access.  If empty, GUI can only be accessed through HomeAssistant."},
-    "panel_icon": "mdi:sync",
-    "map": ["share:rw", "config:rw", "backup:rw", "addons:rw"],
-    "arch": ["aarch64", "amd64"],
-    "ingress": true,
-    "ingress_port": 8384,
-    "init": false
+  "name": "Syncthing",
+  "version": "2.1.7",
+  "url": "https://github.com/krkeegan/home-assistant-addons/tree/main/syncthing",
+  "slug": "syncthing",
+  "description": "Syncthing continuous file synchronization service",
+  "startup": "system",
+  "boot": "auto",
+  "options": {},
+  "schema": {},
+  "ports": {
+    "22000/tcp": 22000,
+    "21027/udp": 21027,
+    "8384/tcp": null
+  },
+  "ports_description": {
+    "22000/tcp": "Sync Protocol Listen Port.  Must match listenAddress in config.",
+    "21027/udp": "Sync Protocol Discovery and Multicast Port. Must match localAnnouncePort in config.",
+    "8384/tcp": "GUI and Rest access.  If empty, GUI can only be accessed through HomeAssistant."
+  },
+  "panel_icon": "mdi:sync",
+  "map": [
+    "share:rw",
+    "config:rw",
+    "backup:rw",
+    "addons:rw"
+  ],
+  "arch": [
+    "aarch64",
+    "amd64"
+  ],
+  "ingress": true,
+  "ingress_port": 8384,
+  "init": false
 }

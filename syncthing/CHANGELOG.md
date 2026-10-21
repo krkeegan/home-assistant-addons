@@ -1,3 +1,6 @@
+# 2.1.7
+- Update Syncthing to v2.1.7
+
 # 2.1.6
 - Upgrade to Syncthing v2.1.6 (v2 release)
 - Update startup script for Syncthing v2 CLI syntax and disable port probing
